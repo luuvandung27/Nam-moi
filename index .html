@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>🎆 Happy New Year 2026 🎆</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:radial-gradient(circle at bottom,#020111,#000);
+  font-family:"Segoe UI",sans-serif;
+  color:#fff;
+}
+
+/* ===== CANVAS ===== */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+}
+
+/* ===== CONTENT ===== */
+#content{
+  position:absolute;
+  top:55%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:92%;
+  text-align:center;
+  z-index:2;
+}
+
+/* ===== TITLE (HEART + COLOR) ===== */
+h1{
+  font-size:64px;
+  margin-bottom:8px;
+  animation:heartBeat 1.3s infinite, colorShift 3s infinite;
+}
+
+@keyframes heartBeat{
+  0%{transform:scale(1);}
+  20%{transform:scale(1.15);}
+  40%{transform:scale(1);}
+  60%{transform:scale(1.2);}
+  100%{transform:scale(1);}
+}
+@keyframes colorShift{
+  0%{color:#ff4d6d;text-shadow:0 0 25px #ff4d6d;}
+  33%{color:#ffd700;text-shadow:0 0 25px #ffd700;}
+  66%{color:#00ffff;text-shadow:0 0 25px #00ffff;}
+  100%{color:#ff4d6d;text-shadow:0 0 25px #ff4d6d;}
+}
+
+/* ===== COUNTDOWN ===== */
+#countdown{
+  font-size:28px;
+  margin-bottom:12px;
+  letter-spacing:2px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{opacity:1;}
+  50%{opacity:.6;}
+  100%{opacity:1;}
+}
+
+/* ===== POEM ===== */
+#poem{height:260px;overflow:hidden;}
+.line{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  animation:floatUp 7s linear forwards;
+}
+.new{font-size:30px;opacity:1;}
+.old{font-size:22px;opacity:.35;}
+@keyframes floatUp{
+  from{bottom:0}
+  to{bottom:240px;opacity:0}
+}
+
+/* ===== HEART FLOAT ===== */
+.heart{
+  position:absolute;
+  left:50%;
+  top:50%;
+  font-size:22px;
+  animation:heartFloat 4s linear infinite;
+  pointer-events:none;
+}
+@keyframes heartFloat{
+  from{transform:translate(-50%,0) scale(1);opacity:1;}
+  to{transform:translate(-50%,-140px) scale(1.8);opacity:0;}
+}
+
+/* ===== PEOPLE FLOAT ===== */
+.person{
+  position:fixed;
+  width:110px;
+  opacity:.9;
+  z-index:1;
+  animation:personFly 40s linear infinite;
+}
+.p2{top:25%;animation-duration:50s}
+.p3{top:45%;animation-duration:60s}
+.p4{top:65%;animation-duration:70s}
+@keyframes personFly{
+  from{left:-140px;}
+  to{left:110%;}
+}
+
+/* ===== WELCOME ===== */
+#welcome{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(0);
+  font-size:72px;
+  font-weight:bold;
+  text-shadow:0 0 40px gold;
+  z-index:4;
+  animation:welcomeZoom 2.5s forwards;
+}
+@keyframes welcomeZoom{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:0}
+  40%{transform:translate(-50%,-50%) scale(1.3);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:1}
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  h1{font-size:38px}
+  #countdown{font-size:20px}
+  .new{font-size:22px}
+  .old{font-size:16px}
+  .person{width:70px}
+}
+</style>
+</head>
+
+<body>
+<canvas id="fireworks"></canvas>
+
+<!-- ẢNH NGƯỜI -->
+<img src="img/nguoi1.png" class="person p1">
+<img src="img/nguoi2.png" class="person p2">
+<img src="img/nguoi3.png" class="person p3">
+<img src="img/nguoi4.png" class="person p4">
+
+<div id="content">
+  <h1>❤️ HAPPY NEW YEAR 2026 ❤️</h1>
+  <div id="countdown"></div>
+  <div id="poem"></div>
+</div>
+
+<script>
+/* ===== POEM ===== */
+const lines=[
+"May joy and peace fill your life,",
+"Success and happiness stay with you,",
+"Family together, dreams come true,",
+"Happy New Year 2026!"
+];
+let idx=0;
+const poem=document.getElementById("poem");
+setInterval(()=>{
+  document.querySelectorAll(".line").forEach(l=>l.className="line old");
+  const d=document.createElement("div");
+  d.className="line new";
+  d.innerText=lines[idx];
+  poem.appendChild(d);
+  setTimeout(()=>d.remove(),7000);
+  idx=(idx+1)%lines.length;
+},1800);
+
+/* ===== HEART FLOAT ===== */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  document.getElementById("content").appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+},600);
+
+/* ===== FIREWORKS ===== */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resize();onresize=resize;
+
+class P{
+  constructor(x,y,vx,vy,c){this.x=x;this.y=y;this.vx=vx;this.vy=vy;this.c=c;this.l=120}
+  u(){this.x+=this.vx;this.y+=this.vy;this.vy+=.04;this.l--}
+  d(){ctx.fillStyle=this.c;ctx.fillRect(this.x,this.y,2,2)}
+}
+let ps=[];
+function burst(x,y,n=80){
+  const c=`hsl(${Math.random()*360},100%,60%)`;
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2;
+    const s=Math.random()*6+4;
+    ps.push(new P(x,y,Math.cos(a)*s,Math.sin(a)*s,c));
+  }
+}
+
+/* ===== COUNTDOWN ===== */
+const cd=document.getElementById("countdown");
+const newYear=new Date("Jan 1, 2026 00:00:00").getTime();
+let isNewYear=false;
+
+setInterval(()=>{
+  const now=Date.now();
+  const d=newYear-now;
+  if(d<=0 && !isNewYear){
+    isNewYear=true;
+    cd.innerHTML="";
+    const w=document.createElement("div");
+    w.id="welcome";
+    w.innerHTML="🎆 WELCOME 2026 🎆";
+    document.body.appendChild(w);
+    for(let i=0;i<20;i++)burst(canvas.width/2,canvas.height/2,120);
+    if("vibrate"in navigator) navigator.vibrate([200,100,200]);
+    setTimeout(()=>w.remove(),5000);
+    return;
+  }
+  if(!isNewYear){
+    const D=Math.floor(d/86400000),
+          H=Math.floor(d%86400000/3600000),
+          M=Math.floor(d%3600000/60000),
+          S=Math.floor(d%60000/1000);
+    cd.innerHTML=`${D} Days ${H}:${M}:${S}`;
+  }
+},1000);
+
+setInterval(()=>{
+  const x=Math.random()*canvas.width;
+  const y=canvas.height*0.2+Math.random()*250;
+  burst(x,y,isNewYear?200:80);
+},isNewYear?250:700);
+
+(function anim(){
+  ctx.fillStyle="rgba(0,0,0,.25)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ps.forEach(p=>{p.u();p.d();});
+  ps=ps.filter(p=>p.l>0);
+  requestAnimationFrame(anim);
+})();
+</script>
+</body>
+</html>
